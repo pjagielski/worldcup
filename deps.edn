@@ -1,0 +1,6 @@
+{:paths ["src/clj" "resources"]
+ :deps {org.clojure/clojure {:mvn/version "1.9.0"}
+        clj-http {:mvn/version "3.9.0"}
+        cheshire {:mvn/version "5.8.0"}
+        proto-repl {:mvn/version "0.3.1"}
+        proto-repl-charts {:mvn/version "0.3.2"}}}
