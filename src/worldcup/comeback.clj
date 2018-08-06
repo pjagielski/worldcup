@@ -164,9 +164,9 @@
 
 (comment
   (-> example-match)
+
+
   (->>
     all-matches
     (filter come-back?)
-    (map teams))
-
-  (first-goal (:home_team_events (fix-match match-to-fix))))
+    (map teams)))
