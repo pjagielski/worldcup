@@ -61,12 +61,10 @@
   (->>
     (vector :a 1)))
 
-
 (comment
   (->>
     [1 2 3]
     (map + [2 4 6])))
-
 
 (comment
   (->>
@@ -74,14 +72,68 @@
     (map vector (repeat 1)))
 
   (->>
-    [43 55 66]
+    [[1 43] [2 55] [2 66]]
     (map vector (repeat :home))))
+
+(comment
+  (-> all-matches
+    first
+    :home_team_events
+    (team-goal-times :home)))
+
+(comment
+  (->
+    [[1 47] [2 46] [2 80]]
+    sort))
+
+(defn part [goal]
+  (let [time (first goal)]
+    (cond
+      (<= time 45) 1
+      (<= time 90) 2
+      (<= time 105) 3
+      (<= time 120) 4)))
+
+(comment
+  (part [2])
+  (part [45 5])
+  (part [46])
+  (part [90 5])
+  (part [105 5]))
+
+(defn parts [time-str]
+  (->>
+    (string/split time-str #"\+")
+    (map string/trim)
+    (map #(string/replace % #"'" ""))
+    (map #(Integer/parseInt %))))
+
+(defn part-and-time [time-str]
+  (let [parts (parts time-str)]
+    [(part parts) (reduce + parts)]))
+
+(comment
+  (part-and-time "45")
+  (part-and-time "47")
+  (part-and-time "45'+2'")
+
+  (->>
+    ["47'" "45'+2'" "45'+7"]
+    (map part-and-time)
+    sort))
 
 (defn winner-side [match]
   (let [winner (:winner match)]
     (cond
       (= winner (:home_team_country match)) :home
       (= winner (:away_team_country match)) :away)))
+
+(defn team-goal-times [events side]
+  (->> events
+    (filter goal?)
+    (map :time)
+    (map part-and-time)
+    (map vector (repeat side))))
 
 (defn first-scored-side [match]
   (let [goal-times
@@ -91,8 +143,9 @@
    (->> goal-times (sort-by second) first first)))
 
 (comment
-  (first [[:away 28] [:home 38] [:home 39] [:home 59] [:home 65]])
-  (first [:away 28]))
+  (sort-by second [[:away [2 46]] [:home [1 52]]])
+  (first [[:home [1 52]] [:away [2 46]]])
+  (first [:home [1 52]]))
 
 (comment
   (->> all-matches
@@ -164,7 +217,6 @@
 
 (comment
   (-> example-match)
-
 
   (->>
     all-matches
